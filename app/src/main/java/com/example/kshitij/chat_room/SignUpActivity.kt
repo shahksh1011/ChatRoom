@@ -12,23 +12,27 @@ import kotlinx.android.synthetic.main.activity_sign_up.view.*
 
 class SignUpActivity : AppCompatActivity() {
 
-    private val mAuth: FirebaseAuth? = null
+    private lateinit var mAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
+        mAuth = FirebaseAuth.getInstance()
+
+//        Toast.makeText(this, "TETX", Toast.LENGTH_LONG).show()
+
         signin_userSignIn.setOnClickListener {
-            Toast.makeText(applicationContext, validate().toString(), Toast.LENGTH_LONG)
+
             if (validate()){
-                Toast.makeText(applicationContext, "Ready to Sign In", Toast.LENGTH_LONG)
-//                mAuth?.createUserWithEmailAndPassword(user_email.text.toString(), user_password.text.toString())?.addOnCompleteListener {
-//                    if (it.isSuccessful){
-//                        val user = mAuth?.currentUser
-//                        Toast.makeText(applicationContext, user?.email.toString(), Toast.LENGTH_LONG)
-//                    }
-//                    else{
-//                        Toast.makeText(applicationContext, "User Not Created", Toast.LENGTH_LONG)
-//                    }
-//                }
+//                Toast.makeText(this, "Ready to Sign In", Toast.LENGTH_LONG).show()
+                mAuth.createUserWithEmailAndPassword(user_email.text.toString(), user_password.text.toString()).addOnCompleteListener {
+                    if (it.isSuccessful){
+                        val user = mAuth.currentUser
+                        Toast.makeText(applicationContext, user?.email.toString(), Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        Toast.makeText(applicationContext, "User Not Created", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
     }
