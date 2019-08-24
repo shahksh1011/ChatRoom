@@ -12,13 +12,23 @@ import kotlinx.android.synthetic.main.activity_sign_up.view.*
 
 class SignUpActivity : AppCompatActivity() {
 
-    private var mAuth: FirebaseAuth? = null
+    private val mAuth: FirebaseAuth? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         signin_userSignIn.setOnClickListener {
+            Toast.makeText(applicationContext, validate().toString(), Toast.LENGTH_LONG)
             if (validate()){
                 Toast.makeText(applicationContext, "Ready to Sign In", Toast.LENGTH_LONG)
+//                mAuth?.createUserWithEmailAndPassword(user_email.text.toString(), user_password.text.toString())?.addOnCompleteListener {
+//                    if (it.isSuccessful){
+//                        val user = mAuth?.currentUser
+//                        Toast.makeText(applicationContext, user?.email.toString(), Toast.LENGTH_LONG)
+//                    }
+//                    else{
+//                        Toast.makeText(applicationContext, "User Not Created", Toast.LENGTH_LONG)
+//                    }
+//                }
             }
         }
     }
@@ -36,9 +46,6 @@ class SignUpActivity : AppCompatActivity() {
             user_password.error = "Password Length should be between 4 and 10"
             valid = false
         }
-
-
         return valid
-
     }
 }
