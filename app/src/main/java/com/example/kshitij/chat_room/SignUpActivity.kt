@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_first_page.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.activity_sign_up.view.*
@@ -27,6 +28,12 @@ class SignUpActivity : AppCompatActivity() {
                 mAuth.createUserWithEmailAndPassword(user_email.text.toString(), user_password.text.toString()).addOnCompleteListener {
                     if (it.isSuccessful){
                         val user = mAuth.currentUser
+                        val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(user_name.text.toString()).build()
+                        user?.updateProfile(profileUpdates)?.addOnCompleteListener {
+                            if (it.isSuccessful){
+                                Toast.makeText(this,"User Created", Toast.LENGTH_LONG).show()
+                            }
+                        }
                         Toast.makeText(applicationContext, user?.email.toString(), Toast.LENGTH_LONG).show()
                     }
                     else{

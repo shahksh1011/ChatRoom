@@ -5,10 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.kshitij.chat_room.Data.User
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_first_page.*
 
-class FirstPageActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
 
@@ -25,6 +26,11 @@ class FirstPageActivity : AppCompatActivity() {
                 if (it.isSuccessful){
                     val user = mAuth.currentUser
                     Toast.makeText(this, user?.email.toString(),Toast.LENGTH_LONG).show()
+                    val intent = Intent()
+                    val currUser = user?.displayName?.let { it1 -> user.email?.let { it2 -> User(it1, it2) } }
+                    intent.putExtra("User", currUser)
+                    setResult(1, intent)
+                    finish()
                 }
                 else{
                     Log.d("Error", it.result.toString())
