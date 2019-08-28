@@ -14,9 +14,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import com.example.kshitij.chat_room.Data.User
+import com.example.kshitij.chat_room.Fragments.FragmentHome
+import com.example.kshitij.chat_room.Fragments.FragmentUserProfile
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
@@ -24,22 +27,21 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val ACTIVITY_REQUEST = 1
-//  PROJECT ID: chatroom-c6286
+    //  PROJECT ID: chatroom-c6286
     private lateinit var mAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mAuth = FirebaseAuth.getInstance()
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
+        val headerView = navView.getHeaderView(0)
+        headerView.findViewById<ImageButton>(R.id.editUserProfile).setOnClickListener {
+            replaceFragmenty(FragmentUserProfile(), allowStateLoss = true, containerViewId = R.id.mainContent)
+        }
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -54,12 +56,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d("PROJECT", FirebaseApp.getInstance().options.projectId)
         val currUser = mAuth.currentUser
         Log.d("Current User", currUser.toString())
-        if(currUser==null){
+        if (currUser == null) {
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivityForResult(intent, ACTIVITY_REQUEST)
 
-        }
-        else{
+        } else {
             val user = User(currUser.displayName.toString(), currUser.email.toString())
             updateUI(user)
 
@@ -69,9 +70,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ACTIVITY_REQUEST){
-            val user = data?.getBundleExtra("User")
-            Log.d("User--", user.toString())
+        if (requestCode == ACTIVITY_REQUEST) {
+
         }
     }
 
@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
+                replaceFragmenty(FragmentHome(), allowStateLoss = true, containerViewId = R.id.mainContent)
                 Toast.makeText(baseContext, "Home", Toast.LENGTH_LONG).show()
             }
             R.id.nav_chatrooms -> {
@@ -111,8 +112,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_notifications -> {
                 Toast.makeText(baseContext, "Notifications", Toast.LENGTH_LONG).show()
+                replaceFragmenty(FragmentUserProfile(), allowStateLoss = true, containerViewId = R.id.mainContent)
             }
-            R.id.nav_logout->{
+            R.id.nav_logout -> {
                 Toast.makeText(baseContext, "Logout", Toast.LENGTH_LONG).show()
                 mAuth.signOut()
                 val intent = Intent(applicationContext, LoginActivity::class.java)
@@ -125,7 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun updateUI(user:User){
+    fun updateUI(user: User) {
         Log.d("USER", user.name.toString() + " -- " + user.email.toString())
         val navView: NavigationView = findViewById(R.id.nav_view)
         val headerView = navView.getHeaderView(0)
